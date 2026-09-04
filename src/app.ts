@@ -3,6 +3,7 @@ import express from "express";
 const app = express();
 app.use(express.json());
 import { emailQueue } from "./queues/emailQueue";
+import { notificationQueue } from './queues/notificationQueue';
 
 app.post("/test-email", async (req, res) => {
   const { email, orderId } = req.body;
@@ -20,6 +21,13 @@ app.post("/test-email", async (req, res) => {
   );
 
   res.json({ message: "Email job queued", jobId: job.id });
+});
+app.post('/test-notification', async (req, res) => {
+  const { userId, message } = req.body;
+
+  const job = await notificationQueue.add('order-shipped', { userId, message });
+
+  res.json({ message: 'Notification job queued', jobId: job.id });
 });
 
 export default app;
