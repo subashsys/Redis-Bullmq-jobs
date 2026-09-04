@@ -35,3 +35,4 @@ prisma/*.db
 # Misc
 *.tgz
 .cache/
+/src/generated/prisma
