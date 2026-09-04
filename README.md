@@ -35,3 +35,30 @@ No dashboard or easy way to see what's happening across all queues — you're st
 - **Priorities & rate limiting** — built-in options to prioritize jobs or throttle processing speed
 - **Dead-letter behavior** — failed jobs (after all retries) stay inspectable instead of vanishing
 - **Bull Board dashboard** — visual UI to monitor queues, jobs, and failures in real time
+
+## What's implemented in this project
+
+**Setup**
+- Redis running locally via Docker (`docker-compose.yml`)
+- Postgres running locally via Docker, connected through Prisma
+- Shared Redis connection: `src/redis.ts`
+
+**Email queue**
+- Producer: `src/queues/emailQueue.ts`
+- Worker: `src/workers/emailWorker.ts`
+- Test route: `POST /test-email` → adds an `order-confirmation` job
+- Retry with exponential backoff tested and verified
+
+**Notification queue**
+- Producer: `src/queues/notificationQueue.ts`
+- Worker: `src/workers/notificationWorker.ts`
+- Test route: `POST /test-notification` → adds an `order-shipped` job
+
+**Running locally**
+Each of these runs in its own terminal:
+```bash
+npm run dev                                    # Express server
+npx tsx watch src/workers/emailWorker.ts       # Email worker
+npx tsx watch src/workers/notificationWorker.ts # Notification worker
+```
+
